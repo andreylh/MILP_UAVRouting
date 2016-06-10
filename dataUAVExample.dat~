@@ -1,36 +1,35 @@
 data;
-param unidadeDeTempo:= 10;
-param dimSquare:= 30;
+param unidadeDeTempo:= 0.5;
+param dimSquare:= 100;
 param dL:= 10;
 param BIGM:= 1000000;
+param lastT:= 6;
+
+set T := 1 2 3 4 5 6;
 
 set P := P1 P2 P3 P4 P5 P6;
-param:   pointDX pointDY pointPackageCAP pointToDeliverDX pointToDeliverDY pointEnergy :=
-P1 2 10 10 4 0  1
-P2 2 5 10  10 0  1
-P3 5 20 5  20 5  0
-P4 0 10 5  5 10 0
-P5 20 20 0 10 5 0
-P6 10 10 1 0 0 0;
+param:   pointDX pointDY pointPackageCAP pointToDeliverDX pointToDeliverDY :=
+P1 2 10 1 4 0  
+P2 2 10 1  5 0  
+P3 5 20 0.5  20 5  
+P4 0 10 0.2  5 10 
+P5 20 20 0.1 10 5 
+P6 10 10 0.3 0 0 ;
 
-set T := 1 2 3 4 5;
-param pointEnergyPrice:
-   1 2 3 4 5 :=
-P1 10 10 10 10 10
-P2 10 10 10 10 10
-P3 0  0  0  0  0
-P4 0  0  0  0  0
-P5 0  0  0  0  0;
 
-set DRONE := D1 D2 D3;
+set DRONE := D1 D2 D3 D4 D5;
 param:   droneMS droneMaxCap droneDoD droneBatteryPower droneInitialDX droneInitialDY:=
-D1 10 20 30 50 1 2
-D2 20 30 20 100 5 5
-D3 50  20 10 30 0 0 ;
+D1 70 1.8 30 50 10 20
+D2 80 0.5 20 100 5 5
+D3 40 0.3 20 100 5 5
+D4 30 0.2 20 100 5 5
+D5 20 0.6 10 30 0 0 ;
 
 
-param isDroneDelivering:
+param droneIsDeliveringAtBegin:
     P1 P2 P3 P4 P5 P6 :=
-D1  0 0 0 0 0 0
+D1  1 0 0 0 0 0
 D2  0 0 0 0 0 0
-D3  0 0 0 0 0 0;
+D3  0 0 0 0 0 0
+D4  0 0 0 0 0 0
+D5  0 0 0 0 0 0;

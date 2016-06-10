@@ -72,7 +72,7 @@ updatedCAPAtBegin{d in DRONE, t in T:t==1}:  droneCurrentCap[d,t] = sum{p in P} 
 
 droneShouldCollect{p in P}: (sum{d in DRONE} droneIsDeliveringAtBegin[d,p] + (sum{t in T} sum{d in DRONE} droneCollected[d,p,t]) )*pointPackageCAP[p] >= pointPackageCAP[p];
 /* maybe remove second term */
-droneShouldCollectAlone{p in P}: (sum{d in DRONE} droneIsDeliveringAtBegin[d,p]) + (sum{t in T} sum{d in DRONE} droneCollected[d,p,t]) = 1;
+droneShouldCollectAlone{p in P}: (sum{d in DRONE} droneIsDeliveringAtBegin[d,p]) + (sum{t in T} sum{d in DRONE} droneCollected[d,p,t]) <= 1;
 droneShouldCollectAndDeliver{p in P, d in DRONE}: sum{t in T} droneDelivered[d,p,t] = droneIsDeliveringAtBegin[d,p] + (sum{t in T} droneCollected[d,p,t]); 
 
 droneIsBeingUsed{d in DRONE}: droneIsUsed[d]*BIGM >= sum{p in P} sum{t in T} droneIsDelivering[d,p,t];
