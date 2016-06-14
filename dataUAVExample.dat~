@@ -5,8 +5,9 @@ param dL:= 10;
 param BIGM:= 1000000;
 param lastT:= 6;
 
-set T := 1 2 3 4 5 6;
+set T := 1 2 3 4 5 ;
 
+/* 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 */
 set P := P1 P2 P3 P4 P5 P6;
 param:   pointDX pointDY pointPackageCAP pointToDeliverDX pointToDeliverDY :=
 P1 2 10 1 4 0  
@@ -17,14 +18,23 @@ P5 20 20 0.1 10 5
 P6 10 10 0.3 0 0 ;
 
 
-set DRONE := D1 D2 D3 D4 D5;
-param:   droneMS droneMaxCap droneDoD droneBatteryPower droneInitialDX droneInitialDY:=
-D1 70 1.8 30 50 10 20
-D2 80 0.5 20 100 5 5
-D3 40 0.3 20 100 5 5
-D4 30 0.2 20 100 5 5
-D5 20 0.6 10 30 0 0 ;
+set EP := 1 2 3 4;
+param:   ePDX ePDY :=
+1 5 5 
+2 0 0 
+3 20 20 
+4 10 10 ;
 
+
+
+set DRONE := D1 D2 D3 D4 D5;
+param:   droneMS droneMaxCap droneVEC droneFEC droneDoD droneBROnArr droneRateOfCharge droneBatteryPower droneInitialDX droneInitialDY:=
+D1       70       1.8 		 10      75 	30       100			80		50                10              20
+D2       80 	  1 		 8   	 75  	20 	 100			80		100 		5 		5
+D3       40 	  0.3 		 7	 75  	20 	 100			80		100 		5 		5
+D4       30 	  0.2 		 5	 75  	20 	 100			80		100 		5 		5
+D5       20	  0.6		 5	 75  	10 	 100			80		30 		0 		0 ;
+	
 
 param droneIsDeliveringAtBegin:
     P1 P2 P3 P4 P5 P6 :=
