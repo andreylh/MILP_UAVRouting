@@ -25,16 +25,16 @@ set DRONE;
 param droneInitialDX{DRONE}, >=0, <= dimSquare;
 param droneInitialDY{DRONE}, >=0, <= dimSquare;
 param droneMS{DRONE}; /*Drone speed in KM/h */
-param droneVEC{DRONE}; /*Drone Variable Energy Consumption related to its MaxSpeed (per Minutes) */
-param droneFEC{DRONE}; /*Drone Fixed Energy Consumption (per Minutes)  */
-param droneMaxCap{DRONE}; /* Drone max cap in KG */
+param droneVEC{DRONE}; /*Drone Variable Energy Consumption related to its MaxSpeed (per min) */
+param droneFEC{DRONE}; /*Drone Fixed Energy Consumption (per min)  */
+param droneMaxCap{DRONE}; /* Drone max cap in kg */
 param droneDoD{DRONE}; /*Maximo que se pode descarregar*/
-param droneRateOfCharge{DRONE}; /* Drone Rate of Charge (per Minute)*/
+param droneRateOfCharge{DRONE}; /* Drone Rate of Charge (per min)*/
 param droneBROnArr{DRONE}; /* Drone battery rate on Arrival (%)*/
-param droneIsDeliveringAtBegin{DRONE,P}, binary; /* 60Kwh*/
+param droneIsDeliveringAtBegin{DRONE,P}, binary; /* Time-dependent matrix indication who is delivering at the begin*/
 param dronesMinFinalCharge; /* Hard constrain for ensuring a minimum amount of energy in each uav battery*/
 
-/*VARIAVEIS*/
+/* DECISION VARIAVEIS*/
 var droneDX{DRONE, T}, >=0, <= dimSquare;
 var droneDY{DRONE, T}, >=0, <= dimSquare;
 var droneCurrentCap{DRONE, T}, >=0;
@@ -55,7 +55,7 @@ var excessOfEnergy{DRONE,T}, >=0, <=20;
 var droneIsOn{DRONE,T}, binary;
 var droneIsUsed{DRONE}, binary;
 
-/*OBJ VARIABLES*/
+/*OBJ FUNCTION - AUXILIARY VARIABLES*/
 var totalDist, >=0;
 var timeToDeliver, >=0;
 var nUsedDrones, >=0;
@@ -73,7 +73,7 @@ calcNDrones: nUsedDrones = sum{d in DRONE} droneIsUsed[d];
 calcDronesAVGSpeed{d in DRONE, t in T:t>=2}: dronesMaxSpeed >= droneSpeed[d,t];
 calcBatteriesOverLoad: auxTotalExcessOfEnergy = sum{d in DRONE} sum{t in T} excessOfEnergy[d,t];
 
-minimize obj: totalDist + timeToDeliver + nUsedDrones + dronesMaxSpeed + makeSpanLC + makeSpanLD + maximizeFinalCharge + auxTotalExcessOfEnergy;
+minimize obj: totalDist + timeToDeliver + nUsedDrones + dronesMaxSpeed + maximizeFinalCharge + makeSpanLC + makeSpanLD + auxTotalExcessOfEnergy;
 
 respectDroneDoD{d in DRONE, t in T:t>=2}: droneBatteryRate[d,t] >= droneDoD[d];
 respectDroneMinFinalCharge{d in DRONE}: droneBatteryRate[d,tMax] >= dronesMinFinalCharge;
@@ -84,7 +84,9 @@ calcEnergyToMakeBatteryFull: maximizeFinalCharge = sum{d in DRONE} ( 100 - drone
 updatedCAP{d in DRONE, t in T:t>=2}:  droneCurrentCap[d,t] = droneCurrentCap[d,t-1] + sum{p in P} ( droneCollected[d,p,t]*pointPackageCAP[p] - droneDelivered[d,p,t]*pointPackageCAP[p]);
 updatedCAPAtBegin{d in DRONE}:  droneCurrentCap[d,1] = sum{p in P} droneIsDeliveringAtBegin[d,p]*pointPackageCAP[p];
 
-droneShouldCollect{p in P}: (sum{d in DRONE} droneIsDeliveringAtBegin[d,p] + (sum{t in T} sum{d in DRONE} droneCollected[d,p,t]) )*pointPackageCAP[p] >= pointPackageCAP[p];
+
+droneShouldCollect{p in P}: (sum{d in DRONE} droneIsDeliveringAtBegin[d,p] + (sum{t in T} sum{d in DRONE} droneCollected[d,p,t]) )*pointPackageCAP[p] >= pointPackageCAP[p]; 
+
 /* maybe remove second term */
 droneShouldCollectAlone{p in P}: (sum{d in DRONE} droneIsDeliveringAtBegin[d,p]) + (sum{t in T} sum{d in DRONE} droneCollected[d,p,t]) = 1;
 droneShouldCollectAndDeliver{p in P, d in DRONE}: sum{t in T} droneDelivered[d,p,t] = droneIsDeliveringAtBegin[d,p] + (sum{t in T} droneCollected[d,p,t]); 
